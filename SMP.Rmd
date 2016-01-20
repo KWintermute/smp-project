@@ -1,0 +1,171 @@
+---
+title: "Untitled"
+author: "Maj Jason Freels"
+date: "December 18, 2015"
+output: html_document
+---
+
+
+```{r, echo=FALSE}
+#Definition of function to compute the first passage CDF matrix in the LT domain
+SMP.firstpass.cdf <- function(s) {
+  tmp1 <- p*ft(s)  
+  tmp2 <- solve(Id-tmp1)
+  tmp3 <- solve(Id*tmp2)
+  return(1/s*tmp1%*%tmp2%*%tmp3)
+}
+
+#Definition of function to compute the first passage PDF matrix in the LT domain
+SMP.firstpass.pdf <- function(s) {
+  tmp1 <- p*ft(s)  
+  tmp2 <- solve(Id-tmp1)
+  tmp3 <- solve(Id*tmp2)
+  return(tmp1%*%tmp2%*%tmp3)
+}
+
+#Definition of function to compute the transient probability matrix in the LT domain
+SMP.transprob.t <- function(s) {
+  J <- matrix(1,ncol=n,nrow=n)
+  tmp1 <- p*ft(s)  
+  tmp2 <- solve(Id-tmp1) 
+  return(1/s*tmp2%*%(Id-Id*(tmp1%*%J))) 
+}
+
+#Definition of function to compute the expected visits to a state matrix in the LT domain
+SMP.expected.visits.to.state <- function(s) {
+  tmp1 <- p*ft(s)  
+  tmp2 <- solve(Id-tmp1) 
+  return(1/s*(tmp2-Id)) 
+}
+
+#Definition of function to compute the expected time in state matrix in the LT domain
+SMP.expected.time.in.state <- function(s) {
+  J <- matrix(1,ncol=n,nrow=n)
+  tmp1 <- p*ft(s)  
+  tmp2 <- solve(Id-tmp1) 
+  return(1/s^2*tmp2%*%(Id-Id*(tmp1%*%J))) 
+}
+
+#Definition of function to compute the probability of transistioning to state 0 times matrix in the LT domain
+SMP.prob.trans.to.state.0.times <- function(s) {
+  J <- matrix(1,ncol=n,nrow=n)
+  tmp1 <- p*ft(s)  
+  tmp2 <- solve(Id-tmp1)
+  tmp3 <- solve(Id*tmp2)
+  g <- tmp1%*%tmp2%*%tmp3
+  return(1/s*(J-g)) 
+}
+
+#Definition of function to compute the probability of transistioning to state 1 or less times matrix in the LT domain
+SMP.prob.trans.to.state.1.times <- function(s) {
+  J <- matrix(1,ncol=n,nrow=n)
+  tmp1 <- p*ft(s)  
+  tmp2 <- solve(Id-tmp1)
+  tmp3 <- solve(Id*tmp2)
+  g <- tmp1%*%tmp2%*%tmp3
+  return(1/s*(J-g*(J%*%(Id*g)))) 
+}
+
+#Definition of function to compute the probability of transistioning to state 2 or less times matrix in the LT domain
+SMP.prob.trans.to.state.2.times <- function(s) {
+  J <- matrix(1,ncol=n,nrow=n)
+  tmp1 <- p*ft(s)  
+  tmp2 <- solve(Id-tmp1)
+  tmp3 <- solve(Id*tmp2)
+  g <- tmp1%*%tmp2%*%tmp3
+  return(1/s*(J-g*(J%*%((Id*g)^2)))) 
+}
+
+
+#Definition of the EULER function to invert LTs
+#The first arguement is a vector of functions to invert
+#The second arguement is the Time and the others are optional parameters
+#The output is a array of matricies indexed by the input functions
+euler_par <- function(input_f_vec,T,A = 18.4,Ntr = 15,num=11) {
+  m <- length(input_f_vec)
+  w = c(1/2,rep(1,Ntr-1), rev(cumsum(choose((num),0:(num))))/(2^(num)))
+  SU <- array(0,c(m,n,n))
+  for (j in 0:(Ntr+num)) { 
+     for (k in 1:m) {
+       SU[k,,] <- SU[k,,] + w[j+1]*(-1)^(j)*Re(input_f_vec[[k]](A/(2*T)+ j*pi/T*1i))
+     }
+  }
+  return(exp(A/2)/T*SU)
+}
+```
+
+```{r echo=FALSE}
+#Defining the number of states n
+n=4
+
+#Defining the nxn identity matrix
+Id <- diag(1,n)
+
+Zero <- rep(0,n)
+
+p <- matrix(c(Zero,Id[,-n]),nrow=n,ncol=n,byrow=F)
+
+#Defining temporary matrix
+temp <- matrix(0,nrow=n,ncol=n,byrow=T)
+
+#Defining a temporary variable for the frequency variable in the LT domain
+temp_s <- 0
+
+#function that calculates the LT for for the f-tilde matrix 
+ft <- function(s) {
+  #Checking if the LTs were just calculated for this value of s
+  if (s == temp_s) {return(temp)}
+
+   #Computing the numeric integration for the LT of the 5 Weibull waiting time distributions
+   ft1r <- function(t) {dlnorm(t,6.264,.8008)*exp(-Re(s)*t)*cos(Im(s)*t)}
+   ft1i <- function(t) {dlnorm(t,6.264,.8008)*exp(-Re(s)*t)*sin(Im(s)*t)}
+   temp1 <- integrate(ft1r,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value - 
+            integrate(ft1i,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value*1i
+   ft2r <- function(t) {dlnorm(t,4.895,1.718)*exp(-Re(s)*t)*cos(Im(s)*t)}
+   ft2i <- function(t) {dlnorm(t,4.895,1.718)*exp(-Re(s)*t)*sin(Im(s)*t)}
+   temp2 <- integrate(ft2r,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value - 
+            integrate(ft2i,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value*1i
+   ft3r <- function(t) {dlnorm(t,4.281,1.804)*exp(-Re(s)*t)*cos(Im(s)*t)}
+   ft3i <- function(t) {dlnorm(t,4.281,1.804)*exp(-Re(s)*t)*sin(Im(s)*t)}
+   temp3 <- integrate(ft3r,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value - 
+            integrate(ft3i,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value*1i
+   # ft4r <- function(t) {dunif(t,0,10)*exp(-Re(s)*t)*cos(Im(s)*t)}
+   # ft4i <- function(t) {dunif(t,0,10)*exp(-Re(s)*t)*sin(Im(s)*t)}
+   # temp4 <- integrate(ft4r,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value - 
+   #          integrate(ft4i,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value*1i
+   # ft5r <- function(t) {dchisq(t,2)*exp(-Re(s)*t)*cos(Im(s)*t)}
+   # ft5i <- function(t) {dchisq(t,2)*exp(-Re(s)*t)*sin(Im(s)*t)}
+   # temp5 <- integrate(ft5r,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value - 
+   #          integrate(ft5i,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value*1i
+   # ft6r <- function(t) {dweibull(t,1.2,2)*exp(-Re(s)*t)*cos(Im(s)*t)}
+   # ft6i <- function(t) {dweibull(t,1.2,2)*exp(-Re(s)*t)*sin(Im(s)*t)}
+   # temp6 <- integrate(ft6r,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value - 
+   #          integrate(ft6i,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value*1i
+   
+   #Defining a matrix to output from this function
+   output <- matrix(
+              c(0.000,temp1,0.000,0.000,
+                0.000,0.000,temp2,0.000,
+                0.000,0.000,0.000,temp3,
+                0.000,0.000,0.000,0.000
+                   ),nrow=n,ncol=n,byrow=T)
+
+   #Updating the "global" variable temp_s
+   temp_s <<- s
+
+   #Updating the "global" matrix variable temp
+   temp <<- output
+
+   return(output)
+}
+```
+
+
+```{r, echo=FALSE}
+SMP.Rel <- function(t) {diag(matrix(euler_par(c(SMP.transprob.t),t), nrow = n,ncol = n))[-n]}
+SMP.cdf <- function(t) {diag(matrix(euler_par(c(SMP.firstpass.cdf),t), nrow = n,ncol = n))[-n]}
+
+ProbFails0 <- function(t)  {euler_par(c(transprobt),t)[1,1,1]}
+ProbFails1 <- function(t)  {euler_par(c(transprobt),t)[1,1,2]}
+ProbFails2 <- function(t)  {euler_par(c(transprobt),t)[1,1,3]}
+```
