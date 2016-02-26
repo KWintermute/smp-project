@@ -5,14 +5,43 @@ date: "December 18, 2015"
 output: html_document
 ---
 
+```{r, echo=FALSE}
+#This is a demo of using the rArmC functions.
+#We start with two sample Matrices to use.
+A <- matrix(
+              c(0.000,3,0.000,0.000,
+                0.000,0.000,2,0.000,
+                5.000,0.000,0.000,3,
+                0.000,1.000,0.000,4.000
+                   ),nrow=4,ncol=4,byrow=T)
+B <- matrix(
+              c(2.000,3,0.000,0.000,
+                0.000,0.000,2,0.000,
+                5.000,4.000,0.000,3,
+                0.000,1.000,5.000,4.000
+                   ),nrow=4,ncol=4,byrow=T)
+#The follow libraries and files must be loaded. If you don't have them you may have to install them using install.packages()
+#IMPORTANT# Adjust the directory for the dyn.load until it matches hwere you keep your rArmC.so file.
+library(RcppArmadillo)
+library(Rcpp)
+dyn.load("Documents/smp-project/rArmC.so")
+C <- .Call("rArmMult", A, B)             #Matrix Multiplcation
+C <- .Call("rArmDiv", A, B)              #Matrix Division
+C <- .Call("rArmSub", A, B)              #Matrix Subtraction
+C <- .Call("rArmAdd", A, B)              #Matrix Addition
+C <- .Call("rArmInv", C)                 #Matrix Inversion
+C <- .Call("rArmSolve", A, B)            #Returns the Matrix A must be
+                                         #Multiplied by to get B
+```
 
 ```{r, echo=FALSE}
 #Definition of function to compute the first passage CDF matrix in the LT domain
 SMP.firstpass.cdf <- function(s) {
   tmp1 <- p*ft(s)  
-  tmp2 <- solve(Id-tmp1)
-  tmp3 <- solve(Id*tmp2)
-  return(1/s*tmp1%*%tmp2%*%tmp3)
+  tmp2 <- .Call("rArmSolve", .Call("rArmSub", Id, tmp1), Id)
+  tmp3 <- .Call("rArmSolve", .Call("rArmMult", Id, tmp2), Id)
+  tmp4 <- .Call("rArmMult", tmp1, .Call("rArmMult", tmp2, tmp3)) 
+  return(1/s*tmp4)
 }
 
 #Definition of function to compute the first passage PDF matrix in the LT domain

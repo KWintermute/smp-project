@@ -4,4 +4,8 @@
 
 %% Modulus, binary%/% Integer divide, binary%*% Matrix product, binary%o% Outer product, binary%x% Kronecker product, binary%in% Matching operator, binary (in model formulae: nesting) 
 
-< Less than, binary> Greater than, binary== Equal to, binary>= Greater than or equal to, binary<= Less than or equal to, binary & And, binary, vectorized&& And, binary, not vectorized | Or, binary, vectorized|| Or, binary, not vectorized <- Left assignment, binary -> Right assignment, binary $ List subset, binary
+< Less than, binary> Greater than, binary== Equal to, binary>= Greater than or equal to, binary<= Less than or equal to, binary 
+& And, binary, vectorized&& And, binary, not vectorized 
+| Or, binary, vectorized|| Or, binary, not vectorized 
+<- Left assignment, binary 
+-> Right assignment, binary $ List subset, binary
