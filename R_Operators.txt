@@ -9,3 +9,8 @@
 | Or, binary, vectorized|| Or, binary, not vectorized 
 <- Left assignment, binary 
 -> Right assignment, binary $ List subset, binary
+
+
+####
+#MEMO TO SELF
+#CumSum(), Length(), Rev(), dlnorm(), RE()/IM(), Integrate()

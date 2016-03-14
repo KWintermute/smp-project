@@ -39,3 +39,9 @@ RcppExport SEXP rArmSolve( SEXP X_, SEXP Y_)
   arma::mat Y = Rcpp::as<arma::mat>(Y_);
   arma::mat ans = arma::solve(X, Y);  return Rcpp::wrap(ans); 
 }
+
+RcppExport SEXP rArmCumSum( SEXP X_ )
+{
+  arma::mat X = Rcpp::as<arma::mat>(X_);
+  arma::mat ans = arma::inv(arma::cumsum(X));  return Rcpp::wrap(ans); 
+}
