@@ -22,9 +22,19 @@ B <- matrix(
                    ),nrow=4,ncol=4,byrow=T)
 #The follow libraries and files must be loaded. If you don't have them you may have to install them using install.packages()
 #IMPORTANT# Adjust the directory for the dyn.load until it matches hwere you keep your rArmC.so file.
+library(devtools)
 library(RcppArmadillo)
 library(Rcpp)
-dyn.load("Documents/smp-project/rArmC.so")
+#dyn.load("Documents/smp-project/rArmC.so")
+
+#Reads in the source file and does compilation if necessary...
+#Seems to me like it only compiles on the first run... may need
+#to see if we can track down where it places generated library.
+Rcpp::sourceCpp("rArmC.cpp", 
+                showOutput = TRUE, 
+                rebuild = FALSE)
+
+#dyn.load("Documents/smp-project/rArmC.so")
 C <- .Call("rArmMult", A, B)             #Matrix Multiplcation
 C <- .Call("rArmDiv", A, B)              #Matrix Division
 C <- .Call("rArmSub", A, B)              #Matrix Subtraction
