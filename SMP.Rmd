@@ -57,8 +57,10 @@ SMP.firstpass.cdf <- function(s) {
 #Definition of function to compute the first passage PDF matrix in the LT domain
 SMP.firstpass.pdf <- function(s) {
   tmp1 <- p*ft(s)  
-  tmp2 <- solve(Id-tmp1)
-  tmp3 <- solve(Id*tmp2)
+  #tmp2 <- solve(Id-tmp1)
+  tmp2 <- .Call("rARMSolve", Id-tmp1)
+  #tmp3 <- solve(Id*tmp2)
+  tmp3 <- .Call("rARMSolve", .Call("rArmMult", Id, tmp2))
   return(tmp1%*%tmp2%*%tmp3)
 }
 
@@ -66,14 +68,16 @@ SMP.firstpass.pdf <- function(s) {
 SMP.transprob.t <- function(s) {
   J <- matrix(1,ncol=n,nrow=n)
   tmp1 <- p*ft(s)  
-  tmp2 <- solve(Id-tmp1) 
+  #tmp2 <- solve(Id-tmp1) 
+  tmp2 <- .Call("rARMSolve", Id-tmp1)
   return(1/s*tmp2%*%(Id-Id*(tmp1%*%J))) 
 }
 
 #Definition of function to compute the expected visits to a state matrix in the LT domain
 SMP.expected.visits.to.state <- function(s) {
   tmp1 <- p*ft(s)  
-  tmp2 <- solve(Id-tmp1) 
+  #tmp2 <- solve(Id-tmp1) 
+  tmp2 <- .Call("rARMSolve", Id-tmp1)
   return(1/s*(tmp2-Id)) 
 }
 
@@ -81,7 +85,8 @@ SMP.expected.visits.to.state <- function(s) {
 SMP.expected.time.in.state <- function(s) {
   J <- matrix(1,ncol=n,nrow=n)
   tmp1 <- p*ft(s)  
-  tmp2 <- solve(Id-tmp1) 
+  #tmp2 <- solve(Id-tmp1)
+  tmp2 <- .Call("rARMSolve", Id-tmp1)
   return(1/s^2*tmp2%*%(Id-Id*(tmp1%*%J))) 
 }
 
@@ -89,8 +94,10 @@ SMP.expected.time.in.state <- function(s) {
 SMP.prob.trans.to.state.0.times <- function(s) {
   J <- matrix(1,ncol=n,nrow=n)
   tmp1 <- p*ft(s)  
-  tmp2 <- solve(Id-tmp1)
-  tmp3 <- solve(Id*tmp2)
+  #tmp2 <- solve(Id-tmp1)
+  tmp2 <- .Call("rARMSolve", Id-tmp1)
+  #tmp3 <- solve(Id*tmp2)
+  tmp3 <- .Call("rARMSolve", .Call("rArmMult", Id, tmp2))
   g <- tmp1%*%tmp2%*%tmp3
   return(1/s*(J-g)) 
 }
@@ -99,8 +106,10 @@ SMP.prob.trans.to.state.0.times <- function(s) {
 SMP.prob.trans.to.state.1.times <- function(s) {
   J <- matrix(1,ncol=n,nrow=n)
   tmp1 <- p*ft(s)  
-  tmp2 <- solve(Id-tmp1)
-  tmp3 <- solve(Id*tmp2)
+  #$tmp2 <- solve(Id-tmp1)
+  tmp2 <- .Call("rARMSolve", Id-tmp1)
+  #tmp3 <- solve(Id*tmp2)
+  tmp3 <- .Call("rARMSolve", .Call("rArmMult", Id, tmp2))
   g <- tmp1%*%tmp2%*%tmp3
   return(1/s*(J-g*(J%*%(Id*g)))) 
 }
@@ -109,8 +118,10 @@ SMP.prob.trans.to.state.1.times <- function(s) {
 SMP.prob.trans.to.state.2.times <- function(s) {
   J <- matrix(1,ncol=n,nrow=n)
   tmp1 <- p*ft(s)  
-  tmp2 <- solve(Id-tmp1)
-  tmp3 <- solve(Id*tmp2)
+  #tmp2 <- solve(Id-tmp1)
+  tmp2 <- .Call("rARMSolve", Id-tmp1)
+  #tmp3 <- solve(Id*tmp2)
+  tmp3 <- .Call("rARMSolve", .Call("rArmMult", Id, tmp2))
   g <- tmp1%*%tmp2%*%tmp3
   return(1/s*(J-g*(J%*%((Id*g)^2)))) 
 }
