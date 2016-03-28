@@ -5,6 +5,9 @@ date: "December 18, 2015"
 output: html_document
 ---
 
+```{r, echo=FALSE}
+library(VGAM)
+```
 
 ```{r, echo=FALSE}
 #Definition of function to compute the first passage CDF matrix in the LT domain
@@ -276,8 +279,8 @@ ft <- function(s) {
    ft1i <- function(t) {dlnorm(t,5.8,.8384)*exp(-Re(s)*t)*sin(Im(s)*t)}
    temp1 <- integrate(ft1r,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value - 
             integrate(ft1i,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value*1i
-   ft2r <- function(t) {pf(t,34.231,2.097)*exp(-Re(s)*t)*cos(Im(s)*t)}
-   ft2i <- function(t) {pf(t,34.231,2.097)*exp(-Re(s)*t)*sin(Im(s)*t)}
+   ft2r <- function(t) {dfisk(t,34.231,2.097)*exp(-Re(s)*t)*cos(Im(s)*t)}
+   ft2i <- function(t) {dfisk(t,34.231,2.097)*exp(-Re(s)*t)*sin(Im(s)*t)}
    temp2 <- integrate(ft2r,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value - 
             integrate(ft2i,0,Inf,subdivisions=10000,rel.tol=1e-10,stop.on.error=FALSE)$value*1i
    ft3r <- function(t) {dlnorm(t,5.128,1.766)*exp(-Re(s)*t)*cos(Im(s)*t)}
