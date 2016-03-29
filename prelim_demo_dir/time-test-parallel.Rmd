@@ -6,8 +6,26 @@ output: slidy_presentation
 ---
 
 #Imports
+
 ```{r, echo=FALSE}
+
+#for dfisk
 library(VGAM)
+
+#Setup parallel processing...
+library(doSNOW)
+library(foreach)
+
+```
+
+#Setup Parallel Settings
+
+```{r, echo=FALSE}
+
+numCoresToUse = 4
+cl<-makeCluster(numCoresToUse)
+registerDoSNOW(cl)
+
 ```
 
 # Define the functions
@@ -102,26 +120,10 @@ euler_par <- function(input_f_vec,T,A = 18.4,Ntr = 15,num=11) {
 
 # Define the Extra Problem
 
-```{r, echo=FALSE}
-#Setup parallel processing...
-library(doSNOW)
-library(foreach)
-
-numCoresToUse = 4
-cl<-makeCluster(numCoresToUse)
-registerDoSNOW(cl)
-```
-
 ```{r}
-
-#For dfisk
-library(VGAM)
 
 # EXTRA Prob
 n <- 3
-
-#Have to load ID matrix for C.
-.Call("createIdentityMatrix", n)
 
 Id <- diag(1,n)
 
