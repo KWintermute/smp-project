@@ -5,18 +5,9 @@ date: "March 28, 2016"
 output: slidy_presentation
 ---
 
-
+#Imports
 ```{r, echo=FALSE}
-library(RcppArmadillo)
-library(Rcpp)
 library(VGAM)
-
-
-#Reads in the source file and does compilation if necessary...
-Rcpp::sourceCpp("smp_clib.cpp",
-                showOutput = TRUE,
-                verbose=TRUE,
-                rebuild = FALSE)
 ```
 
 # Define the functions

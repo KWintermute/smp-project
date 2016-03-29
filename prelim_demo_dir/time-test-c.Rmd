@@ -207,17 +207,6 @@ for (i in 1:2000) {
    Haz[,i,,] <- euler_par(c(SMP.firstpass.cdf,SMP.firstpass.pdf),i/40)
 }
 
-######
-#haz_vals <- foreach(i=1:2000, .packages='VGAM') %dopar% {
-#  return( euler_par(c(SMP.firstpass.cdf,SMP.firstpass.pdf),i/40) )
-#}
-
-#Assemble parallel pieces...
-#for(i in 1:2000){
-#  Haz[,i,,] <- array( unlist(haz_vals[i]), c(2,n,n))
-#}
-######
-
 plot((1:2000)/40,Haz[2,,2,1]/(1-Haz[1,,2,1]),type="l",xlab="Time",ylab="")
 
 t2 <- Sys.time()
