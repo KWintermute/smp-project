@@ -203,13 +203,31 @@ Haz
 
 t1 <- Sys.time()
 
-Haz <- array(NA,c(2,2000,n,n))
 
-for (i in 1:2000) {
-   Haz[,i,,] <- euler_par(c(SMP.firstpass.cdf,SMP.firstpass.pdf),i/40)
+plotSkip <- 50
+plotUpperBound <- 2000
+numPoints <- floor(plotUpperBound / plotSkip)
+
+Haz <- array(NA,c(2, numPoints ,n,n))
+
+#Rprof("HazProfile.out")
+
+
+
+#for (i in 1:100) {
+hazIndex <- 1
+
+for (i in seq(1, plotUpperBound, by=plotSkip)){
+   Haz[,hazIndex  ,,] <- euler_par(c(SMP.firstpass.cdf,SMP.firstpass.pdf), i/40)
+   hazIndex <- hazIndex + 1
 }
 
-plot((1:2000)/40,Haz[2,,2,1]/(1-Haz[1,,2,1]),type="l",xlab="Time",ylab="")
+#Rprof(NULL)
+#summaryRprof("HazProfile.out")
+
+#pdf("C:\\Users\\Jarred\\Desktop\\test_output.pdf",width=11,height=8.5,paper='special')
+plot((1:numPoints)/40,Haz[2,,2,1]/(1-Haz[1,,2,1]),type="l",xlab="Time",ylab="")
+#dev.off()
 
 t2 <- Sys.time()
 
