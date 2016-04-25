@@ -1,0 +1,11 @@
+R is a somewhat odd language in many respects. It is designed both to easily use functions as variables and to be able to treat any variable as a vector.
+
+In order to use R you must first install R and R Studio. Once you have them you can use R-Studio open .rmd files that contain stored R scripts and run them.
+
+You don't compile R code, instead an R workspaces remembers functions that have been run in it (and can use these functions as variables). Once you've opened the file you can load all of the written functions into the workspace by telling R to 'run' all of them. All R variables are global (to the workspace) and are vectors (even if they are a vector of one). Once you've done this you can either instruct it to run a single command in the command line or a script of commands so long as the functions used are already in the workspace.
+
+R code does have support for matrices and matrices are important to understanding the code we were working on. In R if you see the designation %*% %/% %+%, the % % means to do a matrix operation of the specified type for the two variables.
+
+In the code you may see functions that look like .Call("rArmSolve", Id-tmp1). These are where we tell the R program to use the rArmadillo functions in C for the matrix that is the second and (if there is one) third argument).
+
+The core of this program are the EulerPar function and the Ft Function which are where the basic functions of Semi-Markov Processes are preformed. The other methods are either support or are shortcuts to specific data that you might wish to extrapolate from the SMP.

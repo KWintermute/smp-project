@@ -1,0 +1,36 @@
+Schedule
+
+Week 1: ( Week of January 24): 
+	Background study (statistic concepts, formulas) ex. CDR something
+	Setup code repository
+	Setup environment
+
+Week 2: (Week of January 31):
+	Establish example inputs and outputs
+	Experiment with R extensions
+
+Week 3: (Week of February 7):
+	Begin initial port to C/C++
+	Research C/C++ math libraries
+
+Week 4: (Week of February 14):
+	Continue development
+
+Week 5: (Week of February 21):
+	Start initial documentation
+	Continue development
+
+Week 6: (Week of February 28):
+	Finalize C/C++ port
+
+Week 7: (Week of March 6):
+	Test application against given inputs and outputs
+	Test boundary conditions
+	Test compilation on different platforms/compilers (g++, icc, mvcc)
+
+Week 8: (Week of March 13):	
+	Benchmarking
+	Finalize documentation
+
+Week 9: (Week of March 21):
+	Demo Project

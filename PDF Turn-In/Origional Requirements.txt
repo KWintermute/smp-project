@@ -1,0 +1,15 @@
+Requirements
+
+The application shall produce the same results as the original application.
+
+The application shall produce results at least 10% faster than the original application in the use-cases specified by the example code given by the customer.
+
+The application shall expose all functionality to the R environment. 
+ 
+The application shall be compatible on all x86/x64 platforms that run the R interpreter.
+ 
+The application shall not make use of any specific CPU or GPU features that are not available to standard x86/x64 Intel/AMD CPUs.
+ 
+The application’s R extensions shall be written in standard compliant C/C++ and compile with the GNU C/C++ compiler and the Microsoft Visual C/C++ compiler.
+
+
